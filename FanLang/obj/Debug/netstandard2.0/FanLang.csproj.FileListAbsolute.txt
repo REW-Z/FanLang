@@ -1,0 +1,9 @@
+F:\Legacy\MyProjects\FanLang\FanLang\bin\Debug\netstandard2.0\FanLang.deps.json
+F:\Legacy\MyProjects\FanLang\FanLang\bin\Debug\netstandard2.0\FanLang.dll
+F:\Legacy\MyProjects\FanLang\FanLang\bin\Debug\netstandard2.0\FanLang.pdb
+F:\Legacy\MyProjects\FanLang\FanLang\obj\Debug\netstandard2.0\FanLang.csprojAssemblyReference.cache
+F:\Legacy\MyProjects\FanLang\FanLang\obj\Debug\netstandard2.0\FanLang.AssemblyInfoInputs.cache
+F:\Legacy\MyProjects\FanLang\FanLang\obj\Debug\netstandard2.0\FanLang.AssemblyInfo.cs
+F:\Legacy\MyProjects\FanLang\FanLang\obj\Debug\netstandard2.0\FanLang.csproj.CoreCompileInputs.cache
+F:\Legacy\MyProjects\FanLang\FanLang\obj\Debug\netstandard2.0\FanLang.dll
+F:\Legacy\MyProjects\FanLang\FanLang\obj\Debug\netstandard2.0\FanLang.pdb
