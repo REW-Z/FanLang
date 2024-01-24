@@ -164,7 +164,6 @@ namespace FanLang
 
 
 
-
         /// <summary>
         /// 此法单元扫描
         /// </summary>
@@ -308,15 +307,31 @@ namespace FanLang
     /// </summary>
     public class Parser
     {
+        // ****** 注意事项 ******  
+        //
+        //非终结符的产生式的第一项是非终结符自己，会导致左递归。  
+        //预测分析法要求FIRST(α)和FIRST(β)不相交。   
+        //
+        //
+        // ****** 文法定义 ******  
         //stmt  ->  <var> <id> <=> expr <;>
         //          <id> <=> expr <;>
         //
         //
-        //expr  ->  <id>
+        //expr  ->  term rest  
+        //          //expr + ...  （不可行）（左递归）
+        //
+        //term  ->  <id>
         //          <num>
-        //          <id> <+> expr
-        //          <num> <+> expr
-        //          expr + expr;???左递归???
+        //
+        //rest  ->  <+> term
+        //          <-> term
+        //          ε
+
+
+
+
+
 
 
         public List<Token> input;
@@ -377,7 +392,17 @@ namespace FanLang
             syntaxTree.AppendNode(currentNode, exprNode);
             this.currentNode = exprNode;
 
-            switch (lookaheadToken.name)
+            term(); rest();
+
+            this.currentNode = exprNode.parent;
+        }
+        public void term()
+        {
+            var termNode = new SyntaxTree.Node() { isLeaf = false, name = "term" };
+            syntaxTree.AppendNode(currentNode, termNode);
+            this.currentNode = termNode;
+
+            switch(lookaheadToken.name)
             {
                 case "id":
                     match("id");
@@ -389,10 +414,29 @@ namespace FanLang
                     throw new Exception("syntax error!");
             }
 
-            this.currentNode = exprNode.parent;
+            this.currentNode = termNode.parent;
         }
-        public void optexpr()
+        public void rest()
         {
+            var restNode = new SyntaxTree.Node() { isLeaf = false, name = "rest" };
+            syntaxTree.AppendNode(currentNode, restNode);
+            this.currentNode = restNode;
+
+            switch(lookaheadToken.name)
+            {
+                case "+":
+                    match("+");term();
+                    break;
+                case "-":
+                    match("-"); term();
+                    break;
+                default:
+                    //ε
+                    break;
+            }
+
+
+            this.currentNode = restNode.parent;
         }
         public void match(string terminal)
         {
@@ -419,6 +463,7 @@ namespace FanLang
         public class Node
         {
             public bool isLeaf = false;
+            public int depth = 0;
             public string name = "";
 
             public Node parent = null;
@@ -444,13 +489,40 @@ namespace FanLang
             parent.children.Add(newnode);
             newnode.parent = parent;
 
+            newnode.depth = parent.depth + 1;
+
             allnodes.Add(newnode);
         }
 
 
         public string Serialize()
         {
-            return "";
+            System.Text.StringBuilder strb = new System.Text.StringBuilder();
+
+            Traversal((node) => {
+                string brace = "";
+                for(int i = 0; i < node.depth; ++i)
+                {
+                    brace += "    ";
+                }
+                strb.AppendLine(brace + (node.isLeaf ? ("<" + node.name + ">") : node.name));
+            });
+
+            return strb.ToString();
+        }
+
+        public void Traversal(Action<Node> operation)
+        {
+            TraversalNode(root, operation);
+        }
+        private void TraversalNode(Node node, Action<Node> operation)
+        {
+            operation(node);
+
+            foreach(var child in node.children)
+            {
+                TraversalNode(child, operation);
+            }
         }
     }
 }
