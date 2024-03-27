@@ -11,7 +11,12 @@ namespace FanLangTest
     {
         static void Main(string[] args)
         {
+            TestLL1Parse();
+        }
 
+
+        static void TestSimpleParse()
+        {
             string input =
                 @"var a = 233;
                   var b = 111;
@@ -19,11 +24,11 @@ namespace FanLangTest
                  ";
 
             FanLang.Compiler compiler = new Compiler();
-            
+
             //词法分析  
             List<Token> tokens = compiler.Scan(input);
 
-            Console.WriteLine("词法单元列表：");
+            Console.WriteLine("\n\n词法单元列表：");
             foreach (var t in tokens)
             {
                 Console.WriteLine(t.ToString());
@@ -31,9 +36,37 @@ namespace FanLangTest
 
 
             //语法分析  
-            SyntaxTree tree = compiler.Parse(tokens);
+            ParseTree tree = compiler.Parse(tokens);
 
-            Console.WriteLine("语法分析树：");
+            Console.WriteLine("\n\n语法分析树：");
+            Console.WriteLine(tree.Serialize());
+        }
+
+
+
+        static void TestLL1Parse()
+        {
+            string input =
+                @"var a = 233;
+                  var b = (a + 111) * 222;
+                 ";
+
+            FanLang.Compiler compiler = new Compiler();
+
+            //词法分析  
+            List<Token> tokens = compiler.Scan(input);
+
+            Console.WriteLine("\n\n词法单元列表：");
+            foreach (var t in tokens)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+
+            //语法分析  
+            ParseTree tree = compiler.Parse(tokens);
+
+            Console.WriteLine("\n\n语法分析树：");
             Console.WriteLine(tree.Serialize());
         }
     }
